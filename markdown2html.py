@@ -18,6 +18,3 @@ def markdown2html(input_md, output_html):
     elif not os.path.exists(sys.argv[1]):
         sys.stderr.write("Missing " + input_md + "\n")
         sys.exit(1)
-
-markdown2html(sys.argv[1], sys.argv[2])
-exit(0)
