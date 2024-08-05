@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/python3
 '''
 Script that takes 2 strings as arguments:
     - First argument is the name of the Markdown file
