@@ -6,33 +6,26 @@ Script that takes 2 strings as arguments:
 '''
 
 import sys
-import os
-import markdown
+import os.path
 
 
-def markdown2html():
-
+def main():
     if len(sys.argv) != 3:
-        print("Usage: ./markdown2html.py README.md README.html")
-        exit(1)
+        sys.stderr.write("Usage: ./markdown2html.py README.md README.html\n")
+        sys.exit(1)
+    mdfile = sys.argv[1]
+    htmlfile = sys.argv[2]
 
-    input_md = sys.argv[1]
-    output_html = sys.argv[2]
-
-    if not os.path.exists(sys.argv[1]):
-        print("Missing " + input_md + "\n")
-        exit(1)
-
-    with open(input_md, 'r', encoding='utf-8') as f:
-        md_content = f.read()
-
-    html_content = markdown.markdown(md_content)
-
-    with open(output_html, 'w', encoding='utf-8') as f:
-        f.write(html_content)
-
-    exit(0)
+    if not os.path.isfile(mdfile):
+        sys.stderr.write("Missing {}\n".format(mdfile))
+        sys.exit(1)
+    else:
+        with open(mdfile, 'r') as f:
+            content = f.read()
+            with open(htmlfile, 'w') as file:
+                file.write(content)
+        sys.exit(0)
 
 
 if __name__ == "__main__":
-    markdown2html()
+    main()
