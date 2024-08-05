@@ -24,7 +24,8 @@ def convert_markdown_to_html(md_content):
         if heading_match:
             heading_level = len(heading_match.group(1))
             heading_text = heading_match.group(2)
-            html_lines.append(f'<h{heading_level}>{heading_text}</h{heading_level}>')
+            html_lines.append(
+                f'<h{heading_level}>{heading_text}</h{heading_level}>')
 
         else:
 
