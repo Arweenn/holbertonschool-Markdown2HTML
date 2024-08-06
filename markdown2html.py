@@ -53,7 +53,7 @@ def main():
     html_content = convert_markdown_to_html(content)
 
     with open(htmlfile, 'w', encoding='utf-8') as file:
-        file.write(html_content)
+        file.write(html_content + '\n')
 
     sys.exit(0)
 
