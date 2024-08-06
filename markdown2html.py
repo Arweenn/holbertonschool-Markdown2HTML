@@ -25,6 +25,9 @@ def convert_markdown_to_html(md_content):
 
     for line in lines:
 
+        line = re.sub(r'\*\*(.*)\*\*', r'<b>\1</b>', line)
+        line = re.sub(r'__(.*)__', r'<em>\1</em>', line)
+
         heading_match = heading_pattern.match(line)
         ul_match = ul_pattern.match(line)
         ol_match = ol_pattern.match(line)
