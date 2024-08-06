@@ -27,19 +27,16 @@ def convert_markdown_to_html(md_content):
             html_lines.append(
                 f'<h{heading_level}>{heading_text}</h{heading_level}>')
 
-        else:
-
-            if line.strip() == '':
-                html_lines.append(f'<p>{line}</p>')
-
     html_text = '\n'.join(html_lines)
     return html_text
 
 
 def main():
+
     if len(sys.argv) != 3:
         sys.stderr.write("Usage: ./markdown2html.py README.md README.html\n")
         sys.exit(1)
+
     mdfile = sys.argv[1]
     htmlfile = sys.argv[2]
 
