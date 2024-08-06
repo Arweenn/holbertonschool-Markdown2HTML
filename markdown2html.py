@@ -47,12 +47,12 @@ def main():
         sys.stderr.write("Missing {}\n".format(mdfile))
         sys.exit(1)
 
-    with open(mdfile, 'r') as f:
+    with open(mdfile, 'r', encoding='utf-8') as f:
         content = f.read()
 
     html_content = convert_markdown_to_html(content)
 
-    with open(htmlfile, 'w') as file:
+    with open(htmlfile, 'w', encoding='utf-8') as file:
         file.write(html_content)
 
     sys.exit(0)
