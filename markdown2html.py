@@ -16,41 +16,71 @@ def convert_markdown_to_html(md_content):
     html_lines = []
 
     heading_pattern = re.compile(r'^(#{1,6})\s*(.*)')
-    list_pattern = re.compile(r'^-\s+(.*)')
-    in_list = False
+    ul_pattern = re.compile(r'^-\s+(.*)')
+    ol_pattern = re.compile(r'^\*\s+(.*)')
+    in_ul_list = False
+    in_ol_list = False
 
     for line in lines:
 
         heading_match = heading_pattern.match(line)
-        list_match = list_pattern.match(line)
+        ul_match = ul_pattern.match(line)
+        ol_match = ol_pattern.match(line)
 
         if heading_match:
 
-            if in_list:
+            if in_ul_list:
                 html_lines.append('</ul>')
-                in_list = False
+                in_ul_list = False
+
+            if in_ol_list:
+                html_lines.append('</ol>')
+                in_ol_list = False
 
             heading_level = len(heading_match.group(1))
             heading_text = heading_match.group(2)
             html_lines.append(
                 f'<h{heading_level}>{heading_text}</h{heading_level}>')
 
-        elif list_match:
+        elif ul_match:
 
-            if not in_list:
+            if in_ol_list:
+                html_lines.append('</ol>')
+                in_ol_list = False
+
+            if not in_ul_list:
                 html_lines.append(f'<ul>')
-                in_list = True
+                in_ul_list = True
 
-            list_text = list_match.group(1)
+            list_text = ul_match.group(1)
+            html_lines.append(f'<li>{list_text}</li>')
+
+        elif ol_match:
+
+            if in_ul_list:
+                html_lines.append('</ul>')
+                in_ul_list = False
+
+            if not in_ol_list:
+                html_lines.append(f'<ol>')
+                in_ol_list = True
+
+            list_text = ol_match.group(1)
             html_lines.append(f'<li>{list_text}</li>')
 
         else:
-            if in_list:
-                html_lines.append('</ul>')
-                in_list = False
 
-    if in_list:
+            if in_ul_list:
+                html_lines.append('</ul>')
+
+            if in_ol_list:
+                html_lines.append('</ol>')
+
+    if in_ul_list:
         html_lines.append('</ul>')
+
+    if in_ol_list:
+        html_lines.append('</ol>')
 
     html_text = '\n'.join(html_lines)
     return html_text
