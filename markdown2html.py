@@ -18,8 +18,10 @@ def convert_markdown_to_html(md_content):
     heading_pattern = re.compile(r'^(#{1,6})\s*(.*)')
     ul_pattern = re.compile(r'^-\s+(.*)')
     ol_pattern = re.compile(r'^\*\s+(.*)')
+
     in_ul_list = False
     in_ol_list = False
+    in_paragraph = False
 
     for line in lines:
 
@@ -37,6 +39,10 @@ def convert_markdown_to_html(md_content):
                 html_lines.append('</ol>')
                 in_ol_list = False
 
+            if in_paragraph:
+                html_lines.append('</p>')
+                in_paragraph = False
+
             heading_level = len(heading_match.group(1))
             heading_text = heading_match.group(2)
             html_lines.append(
@@ -48,8 +54,12 @@ def convert_markdown_to_html(md_content):
                 html_lines.append('</ol>')
                 in_ol_list = False
 
+            if in_paragraph:
+                html_lines.append('</p>')
+                in_paragraph = False
+
             if not in_ul_list:
-                html_lines.append(f'<ul>')
+                html_lines.append('<ul>')
                 in_ul_list = True
 
             list_text = ul_match.group(1)
@@ -61,8 +71,12 @@ def convert_markdown_to_html(md_content):
                 html_lines.append('</ul>')
                 in_ul_list = False
 
+            if in_paragraph:
+                html_lines.append('</p>')
+                in_paragraph = False
+
             if not in_ol_list:
-                html_lines.append(f'<ol>')
+                html_lines.append('<ol>')
                 in_ol_list = True
 
             list_text = ol_match.group(1)
@@ -70,17 +84,37 @@ def convert_markdown_to_html(md_content):
 
         else:
 
+            if line.strip() == '':
+                if in_paragraph:
+                    html_lines.append('</p>')
+                    in_paragraph = False
+                continue
+
             if in_ul_list:
                 html_lines.append('</ul>')
+                in_ul_list = False
 
             if in_ol_list:
                 html_lines.append('</ol>')
+                in_ol_list = False
+
+            if not in_paragraph:
+                html_lines.append('<p>')
+                in_paragraph = True
+
+            if in_paragraph:
+                if html_lines[-1] != '<p>':
+                    html_lines.append('<br>')
+                html_lines.append(f'{line}')
 
     if in_ul_list:
         html_lines.append('</ul>')
 
     if in_ol_list:
         html_lines.append('</ol>')
+
+    if in_paragraph:
+        html_lines.append('</p>')
 
     html_text = '\n'.join(html_lines)
     return html_text
