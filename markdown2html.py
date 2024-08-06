@@ -16,16 +16,41 @@ def convert_markdown_to_html(md_content):
     html_lines = []
 
     heading_pattern = re.compile(r'^(#{1,6})\s*(.*)')
+    list_pattern = re.compile(r'^-\s+(.*)')
+    in_list = False
 
     for line in lines:
 
         heading_match = heading_pattern.match(line)
+        list_match = list_pattern.match(line)
 
         if heading_match:
+
+            if in_list:
+                html_lines.append('</ul>')
+                in_list = False
+
             heading_level = len(heading_match.group(1))
             heading_text = heading_match.group(2)
             html_lines.append(
                 f'<h{heading_level}>{heading_text}</h{heading_level}>')
+
+        elif list_match:
+
+            if not in_list:
+                html_lines.append(f'<ul>')
+                in_list = True
+
+            list_text = list_match.group(1)
+            html_lines.append(f'<li>{list_text}</li>')
+
+        else:
+            if in_list:
+                html_lines.append('</ul>')
+                in_list = False
+
+    if in_list:
+        html_lines.append('</ul>')
 
     html_text = '\n'.join(html_lines)
     return html_text
