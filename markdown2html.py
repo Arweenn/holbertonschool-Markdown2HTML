@@ -1,13 +1,20 @@
 #!/usr/bin/python3
 '''
-Script that takes 2 strings as arguments:
-    - First argument is the name of the Markdown file
-    - Second argument is the output file name
+Script that transform a markdown file to html file
 '''
 
 import sys
 import os.path
 import re
+import hashlib
+
+
+def md5_hash(text):
+    return hashlib.md5(text.encode()).hexdigest()
+
+
+def remove_c(text):
+    return re.sub(r'c', '', text, flags=re.IGNORECASE)
 
 
 def convert_markdown_to_html(md_content):
@@ -18,6 +25,8 @@ def convert_markdown_to_html(md_content):
     heading_pattern = re.compile(r'^(#{1,6})\s*(.*)')
     ul_pattern = re.compile(r'^-\s+(.*)')
     ol_pattern = re.compile(r'^\*\s+(.*)')
+    md5_pattern = re.compile(r'\[\[(.*?)\]\]')
+    c_pattern = re.compile(r'\(\((.*?)\)\)')
 
     in_ul_list = False
     in_ol_list = False
@@ -25,6 +34,8 @@ def convert_markdown_to_html(md_content):
 
     for line in lines:
 
+        line = md5_pattern.sub(lambda match: md5_hash(match.group(1)), line)
+        line = c_pattern.sub(lambda match: remove_c(match.group(1)), line)
         line = re.sub(r'\*\*(.*)\*\*', r'<b>\1</b>', line)
         line = re.sub(r'__(.*)__', r'<em>\1</em>', line)
 
